@@ -1,5 +1,4 @@
-
-name: Package with Docker
+name: Packaging - Frontend
 
 on:
   push:
