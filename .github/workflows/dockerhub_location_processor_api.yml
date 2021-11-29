@@ -1,4 +1,4 @@
-name: Packaging - Api
+name: Packaging - location_processor_api
 
 on:
   push:
@@ -27,8 +27,8 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v2
         with:
-          context: ./modules/api
-          file: ./modules/api/Dockerfile
+          context: ./modules/location_processor_api
+          file: ./modules/location_processor_api/Dockerfile
           platforms: linux/amd64
           push: true
-          tags: abszissex/nd064-c02-api:latest
+          tags: abszissex/nd064-c02-location_processor_api:latest
