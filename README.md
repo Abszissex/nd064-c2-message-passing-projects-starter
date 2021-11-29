@@ -175,7 +175,7 @@ pip install --upgrade --force-reinstall shapely
 
 ```sh
 ## Building API via docker
-docker build -f ./Dockerfile -t api . 
+docker build -f ./Dockerfile -t demo . 
 
 ```
 
