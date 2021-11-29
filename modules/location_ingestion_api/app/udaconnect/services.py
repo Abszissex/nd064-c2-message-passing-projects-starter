@@ -1,4 +1,3 @@
-import datetime as dt
 import logging
 from typing import Dict
 
@@ -6,6 +5,8 @@ from app.udaconnect.schemas import LocationSchema
 import os
 from kafka import KafkaProducer
 import json
+from datetime import datetime
+
 
 KAFKA_SERVER = os.environ.get("KAFKA_SERVER")
 
@@ -43,14 +44,7 @@ class LocationService:
     @staticmethod
     def create(location: Dict):
 
-        location['creation_time'] = current_milli_time()
 
-        print(location)
+        location['creation_time'] = str(datetime.utcnow())
         loc = LocationSchema().load(location)
-        
-        validation_results: Dict = LocationSchema().validate(loc)
-        if validation_results:
-            logger.warning(f"Unexpected data format in payload: {validation_results}")
-            raise Exception(f"Invalid payload: {validation_results}")
-        ## Publish, since it's a valid location
         publish_to_kafka(location)
