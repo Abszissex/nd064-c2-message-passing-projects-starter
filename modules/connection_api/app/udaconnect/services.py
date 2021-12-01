@@ -95,22 +95,19 @@ class PersonService:
             ids = [person_id]
         )
 
-        persons = stub.GetByIds(req)
-        print(persons)
-        person = persons.persons[0]
+        resp = stub.GetByIds(req)
+        person = resp.persons[0]
         return person
 
     @staticmethod
-    def retrieveMultiple(person_ids: List[int]) -> Person:
+    def retrieveMultiple(person_ids: List[int]) -> List[Person]:
 
         req = person_pb2.GetPersonsByIds(
             ids = person_ids
         )
 
-        persons = stub.GetByIds(req)
-        print(persons)
-        person = persons.persons[0]
-        return person
+        resp = stub.GetByIds(req)
+        return resp.persons
 
     @staticmethod
     def retrieve_all() -> List[Person]:
