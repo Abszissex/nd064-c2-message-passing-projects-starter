@@ -154,12 +154,24 @@ Your architecture diagram should focus on the services and how they talk to one 
 
 
 
+## Installing Apache Kafka
+
+Follow the Apache Kafka quick start -> https://kafka.apache.org/quickstart
+
 --------------------
 
 
-# How to run the project
+## How to run the project
 
 ```sh
+## Create new Kafka topic called 'new_location'
+bin/kafka-topics.sh --create --topic new_location --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+
+
+# Forward k3s port from postgresql - Run in dedicated terminal
+kubectl port-forward svc/postgres 5432:5432
+
+###
 export DB_USERNAME="ct_admin"
 export DB_NAME="geoconnections"
 export DB_HOST="localhost"
@@ -172,89 +184,50 @@ export PROCESSOR_PORT="4999"
 export CONNECTION_PORT="4998"
 
 
+# Starting Location Ingestion API
 cd modules/location_ingestion_api
 flask run --host 0.0.0.0 --port=$INGESTION_PORT
 
+# Starting Location Processor API
 cd modules/location_processor_api
 flask run --host 0.0.0.0 --port=$PROCESSING_PORT
 
-cd modules/conneciton_api
+# Starting Connection API
+cd modules/connection_api
 flask run --host 0.0.0.0 --port=$CONNECTION_PORT
 
+# Starting Person API (gRPC)
 cd modules/person_api_grpc
 python3 main.py
 
-
-
 ```
-
-
-
-
-
 
 
 ### Troubleshooting
 
 
 ```sh
-## MacOs necessary requirements to run API locally
+## MacOs necessary requirements to run APIs locally
 brew install postgresql
 brew install geos
 
 # OSError: Could not find lib c or load any of its variants []
 pip install --upgrade --force-reinstall shapely
-
 ```
 
-### Docker
+### Building services locally in Docker
 
 ```sh
-## Building API via docker
-docker build -f ./Dockerfile -t demo . 
+## 1. Navigate to your service in ./modules/my-service
+cd ./modules/location_ingestion_api
+
+## 2. Building service via docker
+docker build -f ./Dockerfile -t myservice . 
 
 ```
 
 
-### Local development
-```sh
-cd modules/location_ingestion_api
-export KAFKA_SERVER="localhost:9092" && python3 wsgi.py
-```
-
-
-### Kafka
-
-
-```sh
-
-### Create Topic
-bin/kafka-topics.sh --create --topic items --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
-```
-
-
-Forward k3s port from postgresql : 'kubectl port-forward svc/postgres 5432:5432'
-
-export DB_USERNAME="ct_admin"
-export DB_NAME="geoconnections"
-export DB_HOST="localhost"
-export DB_PORT="5432"
-export DB_PASSWORD="wowimsosecure"
-
-export KAFKA_SERVER="localhost:9092"
-
-// TODO: urls for other services!
-
-
-```sh
-flask run --host 0.0.0.0 --port 6000
-```
-
-
-
-
-### Grpc
-
+### Grpc - Creating python files from "*.proto" file
 
 ```sh
 python3 -m grpc_tools.protoc -I./ --python_out=./ --grpc_python_out=./ person.proto
