@@ -1,6 +1,7 @@
 from datetime import datetime
+from flask_restplus import fields
 
-from app.udaconnect.models import Connection, Location, Person
+from app.udaconnect.models import Person
 from app.udaconnect.schemas import (
     ConnectionSchema,
     LocationSchema,
@@ -16,11 +17,17 @@ DATE_FORMAT = "%Y-%m-%d"
 
 api = Namespace("UdaConnect", description="Connections via geolocation.")  # noqa
 
-
+personModel = api.model('Person', {
+    'id': fields.String(required=True),
+    'first_name': fields.String(),
+    'last_name': fields.String(),
+    'company_name': fields.String(),
+})
 
 @api.route("/persons")
 class PersonsResource(Resource):
     @responds(schema=PersonSchema, many=True)
+    @api.doc(body=personModel)
     def get(self) -> List[Person]:
         persons: List[Person] = PersonService.retrieve_all()
         return persons

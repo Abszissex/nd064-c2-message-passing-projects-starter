@@ -153,6 +153,47 @@ Your architecture diagram should focus on the services and how they talk to one 
 
 
 
+
+--------------------
+
+
+# How to run the project
+
+```sh
+export DB_USERNAME="ct_admin"
+export DB_NAME="geoconnections"
+export DB_HOST="localhost"
+export DB_PORT="5432"
+export DB_PASSWORD="wowimsosecure"
+
+export KAFKA_SERVER="localhost:9092"
+export INGESTION_PORT="5000"
+export PROCESSOR_PORT="4999"
+export CONNECTION_PORT="4998"
+
+
+cd modules/location_ingestion_api
+flask run --host 0.0.0.0 --port=$INGESTION_PORT
+
+cd modules/location_processor_api
+flask run --host 0.0.0.0 --port=$PROCESSING_PORT
+
+cd modules/conneciton_api
+flask run --host 0.0.0.0 --port=$CONNECTION_PORT
+
+cd modules/person_api_grpc
+python3 main.py
+
+
+
+```
+
+
+
+
+
+
+
 ### Troubleshooting
 
 
@@ -160,11 +201,6 @@ Your architecture diagram should focus on the services and how they talk to one 
 ## MacOs necessary requirements to run API locally
 brew install postgresql
 brew install geos
-
-
-
-
-
 
 # OSError: Could not find lib c or load any of its variants []
 pip install --upgrade --force-reinstall shapely
@@ -192,13 +228,8 @@ export KAFKA_SERVER="localhost:9092" && python3 wsgi.py
 
 ```sh
 
-
 ### Create Topic
 bin/kafka-topics.sh --create --topic items --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
-
-
-
-bin/kafka-console-producer.sh --topic new_location --bootstrap-server localhost:9092
 ```
 
 
@@ -209,6 +240,10 @@ export DB_NAME="geoconnections"
 export DB_HOST="localhost"
 export DB_PORT="5432"
 export DB_PASSWORD="wowimsosecure"
+
+export KAFKA_SERVER="localhost:9092"
+
+// TODO: urls for other services!
 
 
 ```sh

@@ -114,7 +114,6 @@ class PersonService:
 
     @staticmethod
     def retrieve_all() -> List[Person]:
-
         req = person_pb2.Empty()
         persons = stub.GetAll(req)
         print(persons)

@@ -1,0 +1,51 @@
+openapi: 3.0.1
+info:
+  title: Location Ingestion API
+  version: 0.1.0
+servers:
+- url: /
+tags:
+- name: UdaConnect
+  description: Connections via geolocation.
+paths:
+  /api/locations:
+    post:
+      tags:
+      - UdaConnect
+      operationId: post_location_resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Location'
+        required: true
+      responses:
+        202:
+          description: Accepted
+          content: {}
+        400:
+          description: Invalid Payload
+          content: {}
+      x-codegen-request-body-name: payload
+components:
+  schemas:
+    Location:
+      required:
+      - latitude
+      - longitude
+      - person_id
+      type: object
+      properties:
+        person_id:
+          type: integer
+        longitude:
+          type: string
+        latitude:
+          type: string
+  responses:
+    MaskError:
+      description: When any error occurs on mask
+      content: {}
+    ParseError:
+      description: When a mask can't be parsed
+      content: {}

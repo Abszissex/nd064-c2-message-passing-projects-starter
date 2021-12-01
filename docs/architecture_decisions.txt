@@ -1,0 +1,28 @@
+Location Ingestion API:
+REST API
+I've decided for a REST API here, because it's customer facing and since
+REST is the current industry standard it's easy to integrate with existing and new 
+frontend applications.
+Since the ingestion of the location is not needed to be accesible in real-time in the frontend
+it's okay if it's processed asynchronously from another backend service.
+So this service only received the new location entry and publish an event before it simply returns.
+
+
+Location Processor API:
+Event consumer
+I've decided to listen to a Kafka topic here so this service can process the new locations
+asynchronously in the form of a queue 
+
+
+Connection API:
+REST API
+I've decided for a REST API here, because it's customer facing and since
+REST is the current industry standard it's easy to integrate with existing and new 
+frontend applications.
+
+
+Person API:
+gRPC API
+I've decided for a gRPC API here, because whenever data is being requested from the Connection API
+I need also some person data, which in my design isn't located in the Connection API and as such I need a 
+fast way (gRPC is in general faster than REST) to access the person data.
