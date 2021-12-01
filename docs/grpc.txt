@@ -1,0 +1,46 @@
+####################
+# gRPC Endpoints documentation of Person API:
+####################
+
+syntax = "proto3";
+
+message Person {
+  int32 id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string company_name = 4;
+}
+
+message PersonList {
+  repeated Person persons = 1;
+}
+
+message GetPersonsByIds {
+  repeated int32 ids = 1;
+}
+
+message Empty {
+
+}
+
+
+service PersonService {
+    rpc Create(Person) returns (Person);
+    rpc GetByIds(GetPersonsByIds) returns (PersonList);
+    rpc GetAll(Empty) returns (PersonList);
+}
+
+
+----------------------------
+####################
+# Example of retrieving multiple persons on gRPC client from a gRPC server (Person API):
+####################
+
+def retrieveMultiple(person_ids: List[int]) -> List[Person]:
+
+    req = person_pb2.GetPersonsByIds(
+        ids = person_ids
+    )
+
+    resp = stub.GetByIds(req)
+    return resp.persons
