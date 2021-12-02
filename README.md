@@ -136,34 +136,16 @@ While the Kubernetes service for `postgres` is running (you can use `kubectl get
 kubectl port-forward svc/postgres 5432:5432
 ```
 This will enable you to connect to the database at `localhost`. You should then be able to connect to `postgresql://localhost:5432/geoconnections`. This is assuming you use the built-in values in the deployment config map.
-### Software
-To manually connect to the database, you will need software compatible with PostgreSQL.
-* CLI users will find [psql](http://postgresguide.com/utilities/psql.html) to be the industry standard.
-* GUI users will find [pgAdmin](https://www.pgadmin.org/) to be a popular open-source solution.
-
-## Architecture Diagrams
-Your architecture diagram should focus on the services and how they talk to one another. For our project, we want the diagram in a `.png` format. Some popular free software and tools to create architecture diagrams:
-1. [Lucidchart](https://www.lucidchart.com/pages/)
-2. [Google Docs](docs.google.com) Drawings (In a Google Doc, _Insert_ - _Drawing_ - _+ New_)
-3. [Diagrams.net](https://app.diagrams.net/)
-
-## Tips
-* We can access a running Docker container using `kubectl exec -it <pod_id> sh`. From there, we can `curl` an endpoint to debug network issues.
-* The starter project uses Python Flask. Flask doesn't work well with `asyncio` out-of-the-box. Consider using `multiprocessing` to create threads for asynchronous behavior in a standard Flask application.
-
-
-
-
-## Installing Apache Kafka
-
-Follow the Apache Kafka quick start -> https://kafka.apache.org/quickstart
 
 --------------------
 
-
-## How to run the project
+## How to run the project on your local machine (K3s only for postresql)
 
 ```sh
+## Follow the Apache Kafka quick start
+## -> https://kafka.apache.org/quickstart
+
+
 ## Create new Kafka topic called 'new_location'
 bin/kafka-topics.sh --create --topic new_location --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
 
@@ -171,17 +153,20 @@ bin/kafka-topics.sh --create --topic new_location --bootstrap-server localhost:9
 # Forward k3s port from postgresql - Run in dedicated terminal
 kubectl port-forward svc/postgres 5432:5432
 
-###
+### Export DB variables
 export DB_USERNAME="ct_admin"
 export DB_NAME="geoconnections"
 export DB_HOST="localhost"
 export DB_PORT="5432"
 export DB_PASSWORD="wowimsosecure"
 
+### Export server ports and adresses
 export KAFKA_SERVER="localhost:9092"
-export INGESTION_PORT="5000"
-export PROCESSOR_PORT="4999"
-export CONNECTION_PORT="4998"
+export INGESTION_PORT="30004"
+export PROCESSOR_PORT="30002"
+export CONNECTION_PORT="30004"
+export PERSON_API_PORT="30001"
+export PERSON_API_ADRESS="localhost:30001"
 
 
 # Starting Location Ingestion API
@@ -203,8 +188,8 @@ python3 main.py
 ```
 
 
-### Troubleshooting
-
+## Troubleshooting
+### Local machine
 
 ```sh
 ## MacOs necessary requirements to run APIs locally
@@ -215,6 +200,8 @@ brew install geos
 pip install --upgrade --force-reinstall shapely
 ```
 
+
+## Useful commands
 ### Building services locally in Docker
 
 ```sh
@@ -223,14 +210,69 @@ cd ./modules/location_ingestion_api
 
 ## 2. Building service via docker
 docker build -f ./Dockerfile -t myservice . 
+```
+
+### Running service locally in built docker container
+
+```sh
+## Run 'location_ingestion' Docker image with 'latest' tag
+docker run -it --rm location_ingestion:latest
 
 ```
 
+### Restarting pods of a deployment
+
+```sh
+## Restart pods of a deployment
+kubectl rollout restart deployment location-processor-api
+```
 
 ### Grpc - Creating python files from "*.proto" file
 
 ```sh
 python3 -m grpc_tools.protoc -I./ --python_out=./ --grpc_python_out=./ person.proto
-
-
 ```
+
+
+### Install Helm on your 3s cluster
+```sh
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+```
+
+## Install Kafka on your K3s cluster
+
+Docs: https://bitnami.com/stack/kafka/helm
+
+Notice: You need `helm` installed!
+
+```sh
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm install my-release bitnami/kafka
+```
+
+### Create Kafka Topic on your K3s cluster
+
+```sh
+## Create a container to run commands against the Kafka server
+kubectl run my-release-kafka-client --restart='Never' --image docker.io/bitnami/kafka:2.8.1-debian-10-r57 --namespace default --command -- sleep infinity
+## SSH into the container
+kubectl exec --tty -i my-release-kafka-client --namespace default -- bash
+
+## Create new Topic 'new_location'
+kafka-console-producer.sh \
+  --broker-list my-release-kafka-0.my-release-kafka-headless.default.svc.cluster.local:9092 \
+  --topic new_location
+```
+
+### Troubleshooting
+
+```sh
+## Cluster isn't reachable
+Error: Kubernetes cluster unreachable: Get "http://localhost:8080/version?timeout=32s": dial tcp 127.0.0.1:8080: connect: connection refused
+
+# Solution -> Expose kubeconfig and point to 'k3s.yaml'
+export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+```
+
