@@ -20,6 +20,7 @@ DB_HOST = os.environ["DB_HOST"]
 DB_PORT = os.environ["DB_PORT"]
 DB_NAME = os.environ["DB_NAME"]
 
+PORT = os.environ.get("CONNECTION_PORT", "5000")
 
 engine = create_engine(f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
 Session.configure(bind=engine)  
@@ -113,8 +114,8 @@ def start_grpc_server():
     person_pb2_grpc.add_PersonServiceServicer_to_server(PersonServicer(), server)
 
 
-    print("Server starting on port 5005...")
-    server.add_insecure_port("[::]:5005")
+    print(f"Server starting on port {PORT}...")
+    server.add_insecure_port(f"[::]:{PORT}")
     server.start()
     server.wait_for_termination()
 
