@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import Connection from "./Connection";
 
+import {CONNECTION_API_ADRESS} from '../config';
+
 class Persons extends Component {
   constructor(props) {
     super(props);
-    // TODO: endpoint should be abstracted into a config variable
-    this.endpoint_url = "http://localhost:30004/api/persons";
+    this.endpoint_url = `http://${CONNECTION_API_ADRESS}/api/persons`;
     this.state = {
       persons: [],
       display: null,

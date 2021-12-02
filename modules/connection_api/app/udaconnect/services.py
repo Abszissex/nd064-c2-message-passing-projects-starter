@@ -10,11 +10,13 @@ from sqlalchemy.sql import text
 import grpc
 import app.udaconnect.person_pb2_grpc as person_pb2_grpc
 import app.udaconnect.person_pb2 as person_pb2
+import os
 
+PERSON_API_ADRESS = os.environ.get('PERSON_API_ADRESS', 'localhost:30004')
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger("udaconnect-api")
-channel = grpc.insecure_channel("localhost:5005")
+channel = grpc.insecure_channel(PERSON_API_ADRESS)
 stub = person_pb2_grpc.PersonServiceStub(channel)
 
 class ConnectionService:

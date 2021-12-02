@@ -1,0 +1,1 @@
+export const CONNECTION_API_ADRESS = 'http://localhost:30004';

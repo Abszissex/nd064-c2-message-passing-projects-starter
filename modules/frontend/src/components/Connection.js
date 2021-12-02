@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import {CONNECTION_API_ADRESS} from '../config';
+
 class Connection extends Component {
   constructor(props) {
     super(props);
@@ -20,9 +22,8 @@ class Connection extends Component {
 
   getConnections = (personId) => {
     if (personId) {
-      // TODO: endpoint should be abstracted into a config variable
       fetch(
-        `http://localhost:30004/api/persons/${personId}/connection?start_date=2020-01-01&end_date=2020-12-30&distance=5`
+        `http://${CONNECTION_API_ADRESS}$/api/persons/${personId}/connection?start_date=2020-01-01&end_date=2020-12-30&distance=5`
       )
         .then((response) => response.json())
         .then((connections) =>
