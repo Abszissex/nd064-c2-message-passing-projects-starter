@@ -13,7 +13,7 @@ def init_consumer():
     print("Init Kafka Consumer")
     print(f"Kafka Server: {KAFKA_SERVER}")
     print(f"Kafka Topic: {TOPIC_NAME}")
-    consumer = KafkaConsumer(TOPIC_NAME)
+    consumer = KafkaConsumer(TOPIC_NAME, bootstrap_servers=KAFKA_SERVER)
     for message in consumer:
         loc = json.loads(message.value)
         try:
