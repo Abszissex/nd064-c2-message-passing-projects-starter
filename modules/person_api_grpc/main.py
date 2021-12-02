@@ -20,7 +20,7 @@ DB_HOST = os.environ["DB_HOST"]
 DB_PORT = os.environ["DB_PORT"]
 DB_NAME = os.environ["DB_NAME"]
 
-PORT = os.environ.get("CONNECTION_PORT", "5000")
+PORT = os.environ.get("PERSON_API_PORT", "5000")
 
 engine = create_engine(f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
 Session.configure(bind=engine)  
