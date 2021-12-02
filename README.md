@@ -225,6 +225,9 @@ docker run -it --rm location_ingestion:latest
 ```sh
 ## Restart pods of a deployment
 kubectl rollout restart deployment location-processor-api
+
+## Restart pods of all deployments
+kubectl rollout restart deployment
 ```
 
 ### Grpc - Creating python files from "*.proto" file
