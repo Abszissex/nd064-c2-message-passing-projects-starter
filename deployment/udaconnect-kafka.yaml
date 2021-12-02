@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: apache_kafka
+  name: apache_kafka
+spec:
+  ports:
+  - name: "9092"
+    port: 9092
+    targetPort: 9092
+    nodePort: 30005
+  selector:
+    service: apache_kafka
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: apache_kafka
+  name: apache_kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: apache_kafka
+  template:
+    metadata:
+      labels:
+        service: apache_kafka
+    spec:
+      containers:
+      - image: bitnami/kafka:3.0.0
+        name: apache_kafka
+        imagePullPolicy: Always
+        env:
+        - name: KAFKA_CFG_ZOOKEEPER_CONNECT
+          valueFrom:
+            configMapKeyRef:
+              name: db-env
+              key: KAFKA_CFG_ZOOKEEPER_CONNECT
+        - name: ALLOW_PLAINTEXT_LISTENER
+          value: yes
+      restartPolicy: Always
