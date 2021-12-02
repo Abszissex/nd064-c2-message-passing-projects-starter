@@ -31,7 +31,7 @@ spec:
         service: location-ingestion-api
     spec:
       containers:
-      - image: abszissex/location_ingestion_api:latest
+      - image: abszissex/nd064-c02-location_ingestion_api:latest
         name: location-ingestion-api
         imagePullPolicy: Always
         env:

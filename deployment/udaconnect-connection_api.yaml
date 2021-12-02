@@ -31,7 +31,7 @@ spec:
         service: connection-api
     spec:
       containers:
-      - image: abszissex/connection_api:latest
+      - image: abszissex/nd064-c02-connection_api:latest
         name: connection-api
         imagePullPolicy: Always
         env:

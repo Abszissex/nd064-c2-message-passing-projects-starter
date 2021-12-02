@@ -31,7 +31,7 @@ spec:
         service: person-api-grpc
     spec:
       containers:
-      - image: abszissex/person_api_grpc:latest
+      - image: abszissex/nd064-c02-person_api_grpc:latest
         name: person-api-grpc
         imagePullPolicy: Always
         env:

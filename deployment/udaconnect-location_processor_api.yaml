@@ -31,7 +31,7 @@ spec:
         service: location-processor-api
     spec:
       containers:
-      - image: abszissex/location_processor_api:latest
+      - image: abszissex/nd064-c02-location_processor_api:latest
         name: location-processor-api
         imagePullPolicy: Always
         env:
