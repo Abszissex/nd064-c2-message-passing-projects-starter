@@ -14,8 +14,9 @@ def init_consumer():
     print(f"Kafka Server: {KAFKA_SERVER}")
     print(f"Kafka Topic: {TOPIC_NAME}")
     consumer = KafkaConsumer(TOPIC_NAME, bootstrap_servers=KAFKA_SERVER)
-    for message in consumer:
-        loc = json.loads(message.value)
+    while True:
+        for message in consumer:
+            loc = json.loads(message.value)
         try:
             LocationService.create(loc)
         except Exception as e:
